@@ -1,53 +1,47 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { likeBlog } from '../reducers/blogReducer'
+import { notify } from '../reducers/notificationReducer'
 
 class Blog extends React.Component {
-  constructor() {
-    super()
-    this.state = {
-      visible: false
-    }
+    
+  like = (blog) => async () => {
+    this.props.likeBlog(blog)
+    this.props.notify(`You just liked ${blog.title}`, 5000)
   }
   render() {
-    const { blog, like, deletable, remove } = this.props
+    const blog = this.props.blogs.find(a => a._id === this.props.id)
 
-    const blogStyle = {
-      paddingTop: 10,
-      paddingLeft: 2,
-      border: 'solid',
-      borderWidth: 1,
-      marginBottom: 5
-    }
-
-    const contentStyle = {
-      display: this.state.visible? '' : 'none',
-      margin: 5,
-    }
-
-    const adder = blog.user ? blog.user.name : 'anonymous'
-
-    return (
-      <div style={blogStyle}>
-        <div 
-          onClick={() => this.setState({ visible: !this.state.visible })} 
-          className='name'
-        >
-          {blog.title} {blog.author}
-        </div>
-        <div style={contentStyle} className='content'>
+    if (blog)
+    return (      
+      <div>
+        <h2>{blog.title} by {blog.author}</h2>
           <div>
             <a href={blog.url}>{blog.url}</a>
           </div>
           <div>
-            {blog.likes} likes <button onClick={like}>like</button>
+            {blog.likes} likes <button onClick={this.like(blog)}>like</button>
           </div>
           <div>
-            added by {adder}
+            added by {blog.user ? blog.user.name : 'anonymous'}
           </div>
-          {deletable && <div><button onClick={remove}>delete</button></div>}
+          <div>
+            {/*deletable && <div><button onClick={remove}>delete</button></div>*/}
         </div>
       </div>  
     )
+    return (
+      <div> 
+      </div> 
+    )    
   }
 }
 
-export default Blog
+const mapStateToProps = (state) => {
+  const blogs = state.blogs
+  return {
+    blogs
+  }
+}
+
+export default connect(mapStateToProps, { notify, likeBlog } )(Blog)

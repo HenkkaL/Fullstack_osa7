@@ -1,9 +1,9 @@
 const reducer = (state = '', action) => {    
     switch (action.type) {
     case 'NOTIFY':
-      return action.message
+      return action.content
     case 'CLEAR':
-      return ''
+      return action.content
     default:
       return state
     }
@@ -14,14 +14,14 @@ const reducer = (state = '', action) => {
     return async (dispatch) => {
       dispatch({
         type: 'NOTIFY',
-        message
+        content: message
       })
       setTimeout(() => {
         dispatch({
           type: 'CLEAR',
-          message
-        }, time)
-      })
+          content: ''
+        })
+      }, time)
     }
   }
   

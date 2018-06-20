@@ -1,7 +1,7 @@
 import users from '../services/users'
 
 const reducer = (store = [], action) => {
-  if (action.type === 'INITIALIZE') {
+  if (action.type === 'INITIALIZEUSER') {
     return store = action.content
   }
 
@@ -13,7 +13,7 @@ export const initializeUsers = () => {
     const content = await users.getAll()
     console.log(content)
     dispatch({
-      type: 'INITIALIZE',
+      type: 'INITIALIZEUSER',
       content
     })
   }

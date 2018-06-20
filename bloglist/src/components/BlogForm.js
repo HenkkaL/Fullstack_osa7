@@ -1,50 +1,49 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { createBlog } from '../reducers/blogReducer'
+import { notify } from '../reducers/notificationReducer'
 
-const BlogForm = ({ title, author, url, handleChange, handleSubmit }) => {
-  return (
-    <div>
-      <h2>Luo uusi blogi</h2>
+class BlogForm extends React.Component {
+  handleSubmit = (e) => {
+    e.preventDefault()
+    const form = e.target
+    const content = { title: form.title.value, author: form.author.value, url: form.url.value }
+    this.props.createBlog(content)
+    this.props.notify(`New blog: ${ form.title.value } is been added`, 5000)
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          title
-          <input
-            value={title}
-            name='title'
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          author
-          <input
-            value={author}
-            name='author'
-            onChange={handleChange}
-          />
-        </div>
-        <div>
-          url
-          <input
-            value={url}
-            name='url'
-            onChange={handleChange}
-          />
-        </div>        
+    form.title.value = ''
+    form.author.value = ''
+    form.url.value = ''
+  }
 
-        <button type="submit">Luo</button>
-      </form>
-    </div>
-  )
+  render() {
+    return (
+      <div>
+        <h2>Luo uusi blogi</h2>
+
+        <form onSubmit={this.handleSubmit}>
+          <div>
+            title
+          <input name='title'/>
+          </div>
+          <div>
+            author
+          <input name='author' />
+          </div>
+          <div>
+            url
+          <input
+              name='url'
+            />
+          </div>
+
+          <button type="submit">Luo</button>
+        </form>
+      </div>
+    )
+  }
+
 }
 
-BlogForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
-  author: PropTypes.string,
-  title: PropTypes.string.isRequired,
-  url: PropTypes.string.isRequired
-}
 
-
-export default BlogForm
+export default connect(null, { createBlog, notify })(BlogForm)
