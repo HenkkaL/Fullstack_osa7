@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { likeBlog } from '../reducers/blogReducer'
+import { likeBlog, addComment } from '../reducers/blogReducer'
 import { notify } from '../reducers/notificationReducer'
 
 class Blog extends React.Component {
@@ -9,8 +9,16 @@ class Blog extends React.Component {
     this.props.likeBlog(blog)
     this.props.notify(`You just liked ${blog.title}`, 5000)
   }
+
+  addComment = (event, blog) => {    
+    event.preventDefault()
+    this.props.addComment(blog, event.target.comment.value)
+    this.props.notify(`comment '${ event.target.comment.value }' added to blog '${blog.title}'`, 5000)
+    event.target.comment.value = ''
+  }
+
   render() {
-    const blog = this.props.blogs.find(a => a._id === this.props.id)
+    const blog = this.props.blog
 
     if (blog)
     return (      
@@ -28,6 +36,18 @@ class Blog extends React.Component {
           <div>
             {/*deletable && <div><button onClick={remove}>delete</button></div>*/}
         </div>
+        <div>
+          <h3>Comments</h3>
+          <form onSubmit={(event) => this.addComment(event, blog)}>
+          <input name='comment'/>
+          <button type="submit">Add comment</button>
+            </form>
+            <ul>
+              {blog.comments.map((comment, index) => 
+                <li key={index} >{comment}</li>
+              )}
+              </ul>
+          </div>
       </div>  
     )
     return (
@@ -37,11 +57,13 @@ class Blog extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  const blogs = state.blogs
+const mapStateToProps = (state, ownProps) => {
+  console.log("omat propsit", ownProps.id)
+  const blog = state.blogs.find(a => a._id === ownProps.id)
+  console.log("mitä tapahtuu", blog)
   return {
-    blogs
+    blog
   }
 }
 
-export default connect(mapStateToProps, { notify, likeBlog } )(Blog)
+export default connect(mapStateToProps, { notify, likeBlog, addComment } )(Blog)

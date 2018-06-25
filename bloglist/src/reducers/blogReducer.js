@@ -17,6 +17,13 @@ const reducer = (store = [], action) => {
     return [...old, { ...liked, likes: liked.likes+1 } ]
   }
 
+  if (action.type==='COMMENT') {
+    const old = store.filter(a => a._id !==action.content._id)
+    const commented = store.find(a => a._id === action.content._id)
+
+    return [...old, { ...commented, comments: action.content.comments } ]
+  }
+
   return store
 }
 
@@ -48,6 +55,17 @@ export const likeBlog = (blog) => {
     dispatch({
       type: 'LIKE',
       id: blog._id
+    })
+  }
+}
+
+export const addComment = (blog, comment) => {
+  //const updatedBlog = { ...blog, comments: [ ...blog.comments, comment] }
+  return async (dispatch) => {
+    const updatedBlog = await blogs.comment(blog._id, comment) 
+    dispatch({
+      type: 'COMMENT',
+      content: updatedBlog
     })
   }
 }
