@@ -28,9 +28,9 @@ const reducer = (store = [], action) => {
 }
 
 export const createBlog = (blog) => {
-  return async (dispatch) => {
-    console.log(blog)
+  return async (dispatch) => {    
     const newBlog = await blogs.create(blog)
+    console.log("uusi", newBlog)
     dispatch({
       type: 'CREATE',
       content: newBlog
